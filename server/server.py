@@ -23,6 +23,27 @@ WAV_PATH = os.path.join(WAV_DIR, "speech.wav")
 SAMPLE_RATE = 24000
 
 DEFAULT_VOICE = os.environ.get("KOKORO_VOICE", "am_puck")
+ACTIVE_MODEL = "kokoro"
+MODEL_VOICES = {
+    "kokoro": [
+        "am_puck",
+        "am_adam",
+        "am_michael",
+        "am_onyx",
+        "am_eric",
+        "am_echo",
+        "am_liam",
+        "am_fenrir",
+        "af_heart",
+        "af_bella",
+        "af_nova",
+        "af_sky",
+        "bm_george",
+        "bm_daniel",
+        "bf_emma",
+        "bf_lily",
+    ],
+}
 
 # Kokoro lang codes: a = American English
 # Note: German not supported by Kokoro-82M, handled by macOS `say` in the hook
@@ -35,6 +56,11 @@ app = Flask(__name__)
 # --- Model loading at startup ---
 
 pipelines: dict = {}
+
+
+def supported_voices() -> list[str]:
+    """Return voices supported by the currently active TTS model."""
+    return MODEL_VOICES.get(ACTIVE_MODEL, MODEL_VOICES["kokoro"])
 
 
 def load_model():
@@ -58,7 +84,18 @@ def load_model():
 
 @app.route("/health", methods=["GET"])
 def health():
-    return jsonify(status="ok", languages=list(pipelines.keys()), default_voice=DEFAULT_VOICE)
+    return jsonify(
+        status="ok",
+        languages=list(pipelines.keys()),
+        default_voice=DEFAULT_VOICE,
+        model=ACTIVE_MODEL,
+    )
+
+
+@app.route("/voices", methods=["GET"])
+def list_voices():
+    """List supported voices for the active model."""
+    return jsonify(model=ACTIVE_MODEL, voices=supported_voices(), current_voice=DEFAULT_VOICE)
 
 
 @app.route("/voice", methods=["POST"])
@@ -68,7 +105,20 @@ def set_voice():
     data = request.get_json(silent=True)
     if not data or "voice" not in data:
         return jsonify(error="missing 'voice' field", current=DEFAULT_VOICE), 400
-    DEFAULT_VOICE = data["voice"]
+    voice = str(data["voice"]).strip()
+    voices = supported_voices()
+    if voice not in voices:
+        return (
+            jsonify(
+                error="unsupported voice",
+                message=f"Voice '{voice}' is not available for model '{ACTIVE_MODEL}'",
+                model=ACTIVE_MODEL,
+                available_voices=voices,
+                current=DEFAULT_VOICE,
+            ),
+            400,
+        )
+    DEFAULT_VOICE = voice
     log.info("Voice changed to: %s", DEFAULT_VOICE)
     return jsonify(voice=DEFAULT_VOICE)
 
@@ -92,6 +142,17 @@ def speak():
 
     pipe = pipelines[lang]
     voice = data.get("voice", DEFAULT_VOICE)
+    voices = supported_voices()
+    if voice not in voices:
+        return (
+            jsonify(
+                error="unsupported voice",
+                message=f"Voice '{voice}' is not available for model '{ACTIVE_MODEL}'",
+                model=ACTIVE_MODEL,
+                available_voices=voices,
+            ),
+            400,
+        )
 
     try:
         results = list(pipe(text, voice=voice, speed=1.0))

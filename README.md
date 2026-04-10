@@ -14,6 +14,7 @@ German responses automatically use macOS's built-in voice (Kokoro doesn't suppor
 4. That's it. Type `/voice` again to turn it off
 
 Switch voices anytime: `/voice am_adam`, `/voice af_bella`, etc.
+Or use `/voice set` to open a voice picker from the currently supported model voice list.
 
 ## Install
 
@@ -39,7 +40,8 @@ The model download takes a minute. The rest is fast.
 
 ## Voices
 
-Pick a voice with `/voice <name>`. Default is `am_puck`.
+Pick a voice with `/voice <name>` or `/voice set`. Default is `am_puck`.
+`/voice set` fetches available voices from the local server (`GET /voices`) and applies the selected voice via `POST /voice`.
 
 | Voice | Sounds like |
 |-------|-------------|
