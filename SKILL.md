@@ -1,23 +1,32 @@
 ---
 name: voice
-description: Toggle TTS voice output on or off. When enabled, Claude's summary line is spoken aloud after each response using Kokoro-82M.
+description: Toggle TTS voice output on or off, set a specific Kokoro voice, or use `/voice set` to pick from an interactive voice list.
 user_invocable: true
 ---
 
-# Voice Toggle
+# Voice Toggle And Selection
 
-Toggle text-to-speech on or off for Claude Code responses.
+Toggle text-to-speech on/off and choose Kokoro voices for Claude Code responses.
 
 ## Instructions
 
-When the user invokes `/voice`, do the following:
+When the user invokes `/voice` with no arguments:
 
 1. Check the contents of `/tmp/claude-tts/state`
 2. If it contains "on": write "off" to the file and tell the user "Voice output disabled."
 3. If it doesn't exist or contains "off": write "on" to the file and tell the user "Voice output enabled."
 
-Optional argument: `/voice [voice_name]` - enable voice AND switch to a specific Kokoro voice (e.g., `/voice am_adam`). To switch voice, POST to `http://127.0.0.1:58732/voice` with `{"voice": "<voice_name>"}`.
+When the user invokes `/voice <voice_name>`:
 
-Available voices: am_puck (default), am_adam, am_michael, am_onyx, am_eric, am_echo, am_liam, am_fenrir, af_heart, af_bella, af_nova, af_sky, bm_george, bm_daniel, bf_emma, bf_lily.
+1. Enable voice output (write `on` to `/tmp/claude-tts/state`).
+2. POST to `http://127.0.0.1:58732/voice` with `{"voice":"<voice_name>"}`.
+3. On success, reply in one line: `Voice output enabled. Voice set to <voice_name>.`
+4. On error, return the server error message in one line.
 
-Keep the response to one line. No explanation needed.
+When the user invokes `/voice set`:
+
+1. GET `http://127.0.0.1:58732/voices`.
+2. Present the returned `voices` list as a clear numbered picker and ask for one selection.
+3. After selection, enable voice output (write `on` to `/tmp/claude-tts/state`) and POST to `/voice` with the selected voice.
+4. Confirm the change in one line: `Voice output enabled. Voice set to <voice_name>.`
+5. If selection is invalid/unavailable, return a clear one-line error and re-show the valid options.
