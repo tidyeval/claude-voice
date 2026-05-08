@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e
 
-# ─── Claude Voice Installer ───────────────────────────────────────────
-# Installs the Kokoro-82M TTS server, hook, and /voice skill for Claude Code.
-# Everything goes under ~/.claude/ so it's easy to find and remove.
+# ─── Agent Voice Installer ────────────────────────────────────────────
+# Installs the Kokoro-82M TTS server, Stop hooks, and /voice skill for
+# Claude Code and Codex.
 # ──────────────────────────────────────────────────────────────────────
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -20,7 +20,7 @@ PLIST_NAME="com.claude.tts.plist"
 SETTINGS="$HOME/.claude/settings.json"
 
 echo ""
-echo "🔊 Claude Voice Installer"
+echo "🔊 Agent Voice Installer"
 echo "========================="
 echo ""
 
@@ -160,13 +160,13 @@ echo "✓ Codex Stop hook configured in $CODEX_DIR/hooks.json"
 
 echo ""
 echo "═══════════════════════════════════════"
-echo "🎉 Claude Voice is installed!"
+echo "🎉 Agent Voice is installed!"
 echo "═══════════════════════════════════════"
 echo ""
 echo "Next steps:"
-echo "  1. Start a Claude Code session"
+echo "  1. Start a Claude Code or Codex session"
 echo "  2. Type /voice to enable voice output"
-echo "  3. Claude will speak the first line of every response"
+echo "  3. The agent will speak the first line of every response"
 echo ""
 echo "Health check:  curl http://127.0.0.1:58732/health"
 echo "Server logs:   tail -f /tmp/claude-tts/server.log"

@@ -2,7 +2,7 @@
 
 Status: shipping
 Current step: lets-ship
-Next step: lets-ship
+Next step: none
 
 ## Goal
 
@@ -15,7 +15,8 @@ Evolve Claude Voice into Agent Voice: one shared local voice runtime with thin C
 - `main` exists locally and on origin.
 - `IMPLEMENTATION_ORDER.md` now tracks three implementation issues.
 - Issue #3 shipped the shared voice runtime and closed on GitHub.
-- Issue #4 adds a Codex Stop-hook adapter, Codex installer wiring, and Codex install/uninstall docs.
+- Issue #4 shipped a Codex Stop-hook adapter, Codex installer wiring, and Codex install/uninstall docs.
+- Issue #5 packages the project as Agent Voice with user-facing Claude Code and Codex setup docs.
 - Codex support is wired through `~/.codex/hooks.json` with `features.codex_hooks` enabled in `~/.codex/config.toml`.
 
 ## Decisions Captured
@@ -38,7 +39,9 @@ Evolve Claude Voice into Agent Voice: one shared local voice runtime with thin C
 - Issue #3 shipped to `main`, pushed, and closed on GitHub. Main verification passed with the same three commands.
 - Issue #4 branch verification passed with `bash -n hooks/tts-summary.sh hooks/codex-tts-summary.sh hooks/voice-runtime.sh tests/test_voice_runtime.sh tests/test_install_config.sh install-config.sh install.sh uninstall.sh`, `bash tests/test_voice_runtime.sh`, `bash tests/test_install_config.sh`, and `cd server && .venv/bin/python -m pytest`.
 - Issue #4 shipped to `main`. Main verification passed with the same four commands.
+- Issue #5 baseline verification passed with `bash -n hooks/tts-summary.sh hooks/codex-tts-summary.sh hooks/voice-runtime.sh tests/test_voice_runtime.sh tests/test_install_config.sh install-config.sh install.sh uninstall.sh`, `bash tests/test_voice_runtime.sh`, `bash tests/test_install_config.sh`, and `cd server && .venv/bin/python -m pytest`.
+- Issue #5 branch verification passed with the same four commands.
 
 ## Recommended Next Actions
 
-- Run `$lets-ship` for #5: package and document Agent Voice for Claude and Codex.
+- Finish #5 landing: merge to `main`, run fresh main verification, push, and close the issue.

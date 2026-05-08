@@ -1,4 +1,4 @@
-"""Kokoro-82M TTS server for Claude Code post-hook.
+"""Kokoro-82M TTS server for Agent Voice Stop hooks.
 
 Keeps the model warm in memory. Single endpoint: POST /speak.
 Generates WAV audio and returns the file path for playback.

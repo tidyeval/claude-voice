@@ -1,15 +1,15 @@
 #!/bin/bash
 set -e
 
-# ─── Claude Voice Uninstaller ─────────────────────────────────────────
-# Removes the TTS server, hook, skill, and launchd service.
+# ─── Agent Voice Uninstaller ──────────────────────────────────────────
+# Removes the TTS server, hooks, skills, temp files, and launchd service.
 # ──────────────────────────────────────────────────────────────────────
 
 LAUNCH_AGENTS="$HOME/Library/LaunchAgents"
 PLIST_NAME="com.claude.tts.plist"
 
 echo ""
-echo "🔇 Claude Voice Uninstaller"
+echo "🔇 Agent Voice Uninstaller"
 echo "==========================="
 echo ""
 
@@ -57,10 +57,10 @@ echo "✓ Temp files cleaned up."
 
 echo ""
 echo "═══════════════════════════════════"
-echo "✓ Claude Voice has been removed."
+echo "✓ Agent Voice has been removed."
 echo "═══════════════════════════════════"
 echo ""
-echo "One manual step remains:"
+echo "Manual cleanup remains:"
 echo "  Edit ~/.claude/settings.json and remove the Stop hook"
 echo "  entry that references tts-summary.sh"
 echo "  Also edit ~/.codex/hooks.json and remove the Stop hook"

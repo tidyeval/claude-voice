@@ -10,8 +10,7 @@ The primary user is a macOS user of Claude Code and Codex who wants lightweight,
 
 ## Repo Map
 
-- `README.md`: user-facing install, usage, troubleshooting, and voice list.
-- `CHANGELOG.md`: release notes for user-visible changes.
+- `README.md`: user-facing install, usage, troubleshooting, smoke tests, uninstall notes, and voice list.
 - `SKILL.md`: `/voice` skill installed into `~/.claude/skills/voice/` and `~/.codex/skills/voice/`.
 - `install.sh`: macOS installer for server, launchd service, hooks, skills, Claude Code settings, and Codex hook config.
 - `install-config.sh`: testable settings helpers for Claude Code JSON hooks and Codex TOML/hooks JSON wiring.
@@ -57,13 +56,13 @@ The primary user is a macOS user of Claude Code and Codex who wants lightweight,
 - The app must remain local-first: no API keys or cloud TTS are required.
 - Installer behavior is macOS-specific.
 - The server should bind only to loopback.
-- `/voice set` depends on `/voices` and `/voice` staying compatible with `SKILL.md`.
+- Voice switching on `main` uses `/voice <voice_name>`, which posts to `POST /voice`; there is no shipped `/voice set` picker or `GET /voices` endpoint on `main`.
 - README, skill instructions, hook endpoints, and server endpoints must move together when command or API behavior changes.
 - Shared runtime behavior must stay client-neutral; Claude and Codex differences belong in adapters.
 
 ## Open Questions
 
 - Whether the repo should track a lockfile for reproducible fresh installs.
-- Whether the current feature branch `codex/voice-set-picker` should be landed, turned into a PR, or kept as review work.
+- Whether open PR #2 (`codex/voice-set-picker`) should be landed, revised, or closed.
 - Whether shell hook behavior should get automated tests before more parsing or language-detection changes.
 - Whether the first Codex release should install only the CLI/TUI hook path or also support Codex desktop app behavior when the app exposes different lifecycle data.

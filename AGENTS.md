@@ -4,7 +4,7 @@ This repo extends the global Codex workflow. See `/Users/tino.kanngiesser/.codex
 
 ## Project Shape
 
-- Product: Claude Voice, a local macOS text-to-speech add-on for Claude Code and Codex.
+- Product: Agent Voice, a local macOS text-to-speech add-on for Claude Code and Codex.
 - Runtime: Bash installer/hook plus a small Python Flask server using Kokoro-82M.
 - Target platform: macOS only. The install flow depends on `launchd`, `afplay`, `say`, `jq`, `uv`, `~/.claude`, and `~/.codex`.
 - User-facing behavior is documented in `README.md`; keep agent operating notes here and durable project context in `CONTEXT.md`.
