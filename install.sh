@@ -7,9 +7,14 @@ set -e
 # ──────────────────────────────────────────────────────────────────────
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+. "$SCRIPT_DIR/install-config.sh"
+
 TTS_DIR="$HOME/.claude/tts-server"
 HOOKS_DIR="$HOME/.claude/hooks"
 SKILLS_DIR="$HOME/.claude/skills/voice"
+CODEX_HOOKS_DIR="$HOME/.codex/hooks"
+CODEX_SKILLS_DIR="$HOME/.codex/skills/voice"
+CODEX_DIR="$HOME/.codex"
 LAUNCH_AGENTS="$HOME/Library/LaunchAgents"
 PLIST_NAME="com.claude.tts.plist"
 SETTINGS="$HOME/.claude/settings.json"
@@ -36,6 +41,7 @@ fi
 
 check_prereq "uv" "Install it: curl -LsSf https://astral.sh/uv/install.sh | sh"
 check_prereq "jq" "Install it: brew install jq"
+check_prereq "python3" "Install Python 3.10-3.12."
 
 echo "✓ Prerequisites look good."
 echo ""
@@ -113,6 +119,12 @@ cp "$SCRIPT_DIR/hooks/voice-runtime.sh" "$HOOKS_DIR/"
 chmod +x "$HOOKS_DIR/tts-summary.sh" "$HOOKS_DIR/voice-runtime.sh"
 echo "✓ Hook installed at $HOOKS_DIR/tts-summary.sh"
 
+mkdir -p "$CODEX_HOOKS_DIR"
+cp "$SCRIPT_DIR/hooks/codex-tts-summary.sh" "$CODEX_HOOKS_DIR/"
+cp "$SCRIPT_DIR/hooks/voice-runtime.sh" "$CODEX_HOOKS_DIR/"
+chmod +x "$CODEX_HOOKS_DIR/codex-tts-summary.sh" "$CODEX_HOOKS_DIR/voice-runtime.sh"
+echo "✓ Codex hook installed at $CODEX_HOOKS_DIR/codex-tts-summary.sh"
+
 # ─── Install skill ────────────────────────────────────────────────────
 
 echo ""
@@ -121,6 +133,10 @@ mkdir -p "$SKILLS_DIR"
 cp "$SCRIPT_DIR/SKILL.md" "$SKILLS_DIR/"
 echo "✓ Skill installed at $SKILLS_DIR/SKILL.md"
 
+mkdir -p "$CODEX_SKILLS_DIR"
+cp "$SCRIPT_DIR/SKILL.md" "$CODEX_SKILLS_DIR/"
+echo "✓ Codex skill installed at $CODEX_SKILLS_DIR/SKILL.md"
+
 # ─── Wire hook into settings.json ─────────────────────────────────────
 
 echo ""
@@ -128,42 +144,17 @@ echo "🔧 Configuring Claude Code settings..."
 
 HOOK_CMD="$HOOKS_DIR/tts-summary.sh"
 
-if [ -f "$SETTINGS" ]; then
-    # Check if hook is already wired
-    if jq -e '.hooks.Stop[]?.hooks[]? | select(.command == "'"$HOOK_CMD"'")' "$SETTINGS" &>/dev/null; then
-        echo "✓ Stop hook already configured in settings.json"
-    else
-        # Add Stop hook entry
-        TMPFILE=$(mktemp)
-        jq --arg cmd "$HOOK_CMD" '
-            .hooks //= {} |
-            .hooks.Stop //= [] |
-            .hooks.Stop += [{"matcher": "", "hooks": [{"type": "command", "command": $cmd}]}]
-        ' "$SETTINGS" > "$TMPFILE" && mv "$TMPFILE" "$SETTINGS"
-        echo "✓ Stop hook added to settings.json"
-    fi
+if agent_voice_enable_claude_hook "$SETTINGS" "$HOOK_CMD"; then
+    echo "✓ Stop hook added to settings.json"
 else
-    # Create minimal settings.json with the hook
-    mkdir -p "$(dirname "$SETTINGS")"
-    cat > "$SETTINGS" <<SETTINGS_EOF
-{
-  "hooks": {
-    "Stop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOOK_CMD"
-          }
-        ]
-      }
-    ]
-  }
-}
-SETTINGS_EOF
-    echo "✓ Created settings.json with Stop hook"
+    echo "✓ Stop hook already configured in settings.json"
 fi
+
+echo "🔧 Configuring Codex settings..."
+CODEX_HOOK_CMD="$CODEX_HOOKS_DIR/codex-tts-summary.sh"
+agent_voice_configure_codex "$CODEX_DIR" "$CODEX_HOOK_CMD"
+echo "✓ Codex hooks enabled in $CODEX_DIR/config.toml"
+echo "✓ Codex Stop hook configured in $CODEX_DIR/hooks.json"
 
 # ─── Done ──────────────────────────────────────────────────────────────
 

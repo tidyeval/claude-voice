@@ -145,4 +145,9 @@ printf '{"last_assistant_message":"**Adapter** [line]\\nSecond line"}\n' | bash 
 wait || true
 assert_log_contains 'curl .*"text": "Adapter line\\n".*"lang": "en"' "Claude adapter reads last_assistant_message"
 
+reset_log
+printf '{"hook_event_name":"Stop","turn_id":"turn-1","last_assistant_message":"**Codex** [line]\\nSecond line","stop_hook_active":false}\n' | bash "$ROOT_DIR/hooks/codex-tts-summary.sh"
+wait || true
+assert_log_contains 'curl .*"text": "Codex line\\n".*"lang": "en"' "Codex adapter reads Stop last_assistant_message"
+
 printf 'ok\n'

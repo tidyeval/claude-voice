@@ -1,15 +1,15 @@
 # Claude Voice
 
-Give Claude Code a voice. Literally.
+Give Claude Code and Codex a voice. Literally.
 
-Type `/voice` in Claude Code and every response starts with the first line spoken aloud using [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M), a fast, high-quality text-to-speech model that runs entirely on your machine. No API keys, no cloud, no latency.
+Type `/voice` and every Claude Code or Codex response starts with the first line spoken aloud using [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M), a fast, high-quality text-to-speech model that runs entirely on your machine. No API keys, no cloud, no latency.
 
 German responses automatically use macOS's built-in voice (Kokoro doesn't support German yet).
 
 ## What happens
 
 1. You type `/voice` to toggle voice on
-2. Claude responds to your question
+2. Claude Code or Codex responds to your question
 3. The first line of the response is spoken aloud
 4. That's it. Type `/voice` again to turn it off
 
@@ -32,8 +32,9 @@ The installer does everything:
 - Installs the TTS server to `~/.claude/tts-server/`
 - Downloads Kokoro-82M weights (~300 MB, first time only)
 - Sets up a background service via launchd (starts on login)
-- Installs the `/voice` skill and the Stop hook
-- Wires everything into your Claude Code settings
+- Installs the `/voice` skill and Stop hooks for Claude Code and Codex
+- Wires Claude Code through `~/.claude/settings.json`
+- Enables Codex hooks in `~/.codex/config.toml` and wires Codex Stop through `~/.codex/hooks.json`
 
 The model download takes a minute. The rest is fast.
 
@@ -65,10 +66,10 @@ Pick a voice with `/voice <name>`. Default is `am_puck`.
 ## How it works
 
 ```
-You ask Claude something
+You ask Claude Code or Codex something
         │
         ▼
-Claude responds
+The agent responds
         │
         ▼
 Stop hook fires ──► Extracts first line of response
@@ -89,6 +90,19 @@ Stop hook fires ──► Extracts first line of response
 ```
 
 The Kokoro server stays warm in memory (launchd keeps it alive), so there's no cold start. First response after boot takes ~2 seconds, after that it's near-instant.
+
+## Codex support
+
+The installer copies the Codex Stop hook to `~/.codex/hooks/codex-tts-summary.sh`, shares the runtime at `~/.codex/hooks/voice-runtime.sh`, installs `/voice` instructions to `~/.codex/skills/voice/`, enables `codex_hooks = true` in `~/.codex/config.toml`, and adds a Stop entry to `~/.codex/hooks.json`.
+
+Smoke-test Codex after install:
+
+```bash
+cat /tmp/claude-tts/state
+codex
+```
+
+Inside Codex, invoke `/voice` or ask Codex to turn voice output on, then send a short prompt. To disable voice, invoke `/voice` again or write `off` to `/tmp/claude-tts/state`.
 
 ## Something not working?
 
@@ -124,6 +138,8 @@ cd claude-voice
 ```
 
 Then remove the Stop hook entry from `~/.claude/settings.json` (the uninstaller will remind you).
+
+If you installed Codex support, also remove the Stop entry that references `codex-tts-summary.sh` from `~/.codex/hooks.json`. You may leave `codex_hooks = true` enabled if other Codex hooks use it.
 
 ## License
 

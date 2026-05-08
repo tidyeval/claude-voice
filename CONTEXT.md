@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Agent Voice gives local spoken feedback to coding agents. The current implementation works for Claude Code: when voice output is enabled, the Stop hook speaks the first non-empty line of the latest assistant response. English uses a local Kokoro-82M server; German falls back to macOS `say`.
+Agent Voice gives local spoken feedback to coding agents. The current implementation works for Claude Code and Codex: when voice output is enabled, the Stop hook speaks the first non-empty line of the latest assistant response. English uses a local Kokoro-82M server; German falls back to macOS `say`.
 
 ## Audience
 
@@ -12,10 +12,12 @@ The primary user is a macOS user of Claude Code and Codex who wants lightweight,
 
 - `README.md`: user-facing install, usage, troubleshooting, and voice list.
 - `CHANGELOG.md`: release notes for user-visible changes.
-- `SKILL.md`: `/voice` skill currently installed into `~/.claude/skills/voice/`.
-- `install.sh`: macOS installer for server, launchd service, hook, skill, and Claude Code settings.
+- `SKILL.md`: `/voice` skill installed into `~/.claude/skills/voice/` and `~/.codex/skills/voice/`.
+- `install.sh`: macOS installer for server, launchd service, hooks, skills, Claude Code settings, and Codex hook config.
+- `install-config.sh`: testable settings helpers for Claude Code JSON hooks and Codex TOML/hooks JSON wiring.
 - `uninstall.sh`: cleanup script for installed files and temp data.
 - `hooks/tts-summary.sh`: Claude Code Stop hook and playback orchestration.
+- `hooks/codex-tts-summary.sh`: Codex Stop hook and playback orchestration.
 - `hooks/voice-runtime.sh`: shared hook runtime for voice state checks, assistant text preparation, language detection, TTS server calls, and macOS playback fallback.
 - `server/pyproject.toml`: Python package metadata and dependencies.
 - `server/server.py`: local Flask TTS server.
@@ -25,8 +27,8 @@ The primary user is a macOS user of Claude Code and Codex who wants lightweight,
 ## Runtime Flow
 
 1. User toggles voice with `/voice`; state is stored in `/tmp/claude-tts/state`.
-2. Claude Code emits a Stop hook payload after an assistant response.
-3. `hooks/tts-summary.sh` extracts `last_assistant_message` as the Claude-specific adapter.
+2. Claude Code or Codex emits a Stop hook payload after an assistant response.
+3. `hooks/tts-summary.sh` or `hooks/codex-tts-summary.sh` extracts `last_assistant_message` as the agent-specific adapter.
 4. `hooks/voice-runtime.sh` cleans the first non-empty line and truncates it to 50 words.
 5. The shared runtime detects German via simple text heuristics.
 6. German text plays through macOS `say`.
@@ -47,8 +49,8 @@ The primary user is a macOS user of Claude Code and Codex who wants lightweight,
 - Keep one shared local voice runtime for state, text cleanup, language detection, Kokoro/macOS playback, voice listing, and voice selection.
 - Keep Claude and Codex behavior in thin adapters. Adapters should own install locations, settings files, hook enablement, and any payload differences.
 - Claude adapter specifics: install under `~/.claude`, wire Claude Code Stop hook settings, and install the Claude `/voice` skill.
-- Codex adapter specifics: install under `~/.codex`, enable `features.codex_hooks`, wire a Stop hook through `~/.codex/hooks.json` or inline `[hooks]`, and install Codex-facing command/skill instructions if supported.
-- Current Codex docs say lifecycle hooks can be loaded from `hooks.json` or inline `[hooks]`, and Stop is a supported event. Local evidence shows an old Codex config used `features.codex_hooks` and a Stop hook command.
+- Codex adapter specifics: install under `~/.codex`, enable `features.codex_hooks`, wire a Stop hook through `~/.codex/hooks.json`, and install Codex-facing `/voice` skill instructions.
+- Current Codex docs say lifecycle hooks can be loaded from `hooks.json`, hooks require `features.codex_hooks`, Stop is a supported event, and Stop payloads include `last_assistant_message`.
 
 ## Invariants
 

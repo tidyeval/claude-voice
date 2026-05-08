@@ -34,10 +34,21 @@ if [ -f "$HOME/.claude/hooks/tts-summary.sh" ]; then
     echo "✓ Hook removed from ~/.claude/hooks/"
 fi
 
+if [ -f "$HOME/.codex/hooks/codex-tts-summary.sh" ]; then
+    rm -f "$HOME/.codex/hooks/codex-tts-summary.sh"
+    rm -f "$HOME/.codex/hooks/voice-runtime.sh"
+    echo "✓ Codex hook removed from ~/.codex/hooks/"
+fi
+
 # Remove skill
 if [ -d "$HOME/.claude/skills/voice" ]; then
     rm -rf "$HOME/.claude/skills/voice"
     echo "✓ Skill removed from ~/.claude/skills/voice/"
+fi
+
+if [ -d "$HOME/.codex/skills/voice" ]; then
+    rm -rf "$HOME/.codex/skills/voice"
+    echo "✓ Codex skill removed from ~/.codex/skills/voice/"
 fi
 
 # Clean up temp files
@@ -52,4 +63,6 @@ echo ""
 echo "One manual step remains:"
 echo "  Edit ~/.claude/settings.json and remove the Stop hook"
 echo "  entry that references tts-summary.sh"
+echo "  Also edit ~/.codex/hooks.json and remove the Stop hook"
+echo "  entry that references codex-tts-summary.sh if present."
 echo ""

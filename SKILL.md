@@ -1,12 +1,12 @@
 ---
 name: voice
-description: Toggle TTS voice output on or off. When enabled, Claude's summary line is spoken aloud after each response using Kokoro-82M.
+description: Toggle TTS voice output on or off. When enabled, the agent's summary line is spoken aloud after each response using Kokoro-82M.
 user_invocable: true
 ---
 
 # Voice Toggle
 
-Toggle text-to-speech on or off for Claude Code responses.
+Toggle text-to-speech on or off for agent responses.
 
 ## Instructions
 

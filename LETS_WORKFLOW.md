@@ -15,8 +15,8 @@ Evolve Claude Voice into Agent Voice: one shared local voice runtime with thin C
 - `main` exists locally and on origin.
 - `IMPLEMENTATION_ORDER.md` now tracks three implementation issues.
 - Issue #3 shipped the shared voice runtime and closed on GitHub.
-- Current implementation still has Claude-shaped install paths, settings wiring, and skill installation under `~/.claude`.
-- Codex support is viable through Codex lifecycle hooks. Current docs describe `features.codex_hooks`, `hooks.json` or inline `[hooks]`, and Stop as a supported event.
+- Issue #4 adds a Codex Stop-hook adapter, Codex installer wiring, and Codex install/uninstall docs.
+- Codex support is wired through `~/.codex/hooks.json` with `features.codex_hooks` enabled in `~/.codex/config.toml`.
 
 ## Decisions Captured
 
@@ -36,8 +36,9 @@ Evolve Claude Voice into Agent Voice: one shared local voice runtime with thin C
 - Planning created GitHub issues #3, #4, and #5.
 - Issue #3 branch verification passed with `bash -n hooks/tts-summary.sh hooks/voice-runtime.sh tests/test_voice_runtime.sh install.sh uninstall.sh`, `bash tests/test_voice_runtime.sh`, and `cd server && .venv/bin/python -m pytest`.
 - Issue #3 shipped to `main`, pushed, and closed on GitHub. Main verification passed with the same three commands.
+- Issue #4 branch verification passed with `bash -n hooks/tts-summary.sh hooks/codex-tts-summary.sh hooks/voice-runtime.sh tests/test_voice_runtime.sh tests/test_install_config.sh install-config.sh install.sh uninstall.sh`, `bash tests/test_voice_runtime.sh`, `bash tests/test_install_config.sh`, and `cd server && .venv/bin/python -m pytest`.
 
 ## Recommended Next Actions
 
-- Run `$lets-ship` for #4: add Codex Stop-hook adapter and installer wiring.
-- Then ship #5 to package and document Agent Voice for Claude and Codex.
+- Finish landing #4 to `main`, then close the issue with main verification evidence.
+- Then run `$lets-ship` for #5: package and document Agent Voice for Claude and Codex.
