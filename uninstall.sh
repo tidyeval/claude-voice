@@ -30,6 +30,7 @@ fi
 # Remove hook
 if [ -f "$HOME/.claude/hooks/tts-summary.sh" ]; then
     rm -f "$HOME/.claude/hooks/tts-summary.sh"
+    rm -f "$HOME/.claude/hooks/voice-runtime.sh"
     echo "✓ Hook removed from ~/.claude/hooks/"
 fi
 

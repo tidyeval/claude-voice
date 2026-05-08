@@ -109,7 +109,8 @@ echo ""
 echo "🪝 Installing Stop hook..."
 mkdir -p "$HOOKS_DIR"
 cp "$SCRIPT_DIR/hooks/tts-summary.sh" "$HOOKS_DIR/"
-chmod +x "$HOOKS_DIR/tts-summary.sh"
+cp "$SCRIPT_DIR/hooks/voice-runtime.sh" "$HOOKS_DIR/"
+chmod +x "$HOOKS_DIR/tts-summary.sh" "$HOOKS_DIR/voice-runtime.sh"
 echo "✓ Hook installed at $HOOKS_DIR/tts-summary.sh"
 
 # ─── Install skill ────────────────────────────────────────────────────
