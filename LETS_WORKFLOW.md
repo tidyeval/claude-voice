@@ -37,8 +37,8 @@ Evolve Claude Voice into Agent Voice: one shared local voice runtime with thin C
 - Issue #3 branch verification passed with `bash -n hooks/tts-summary.sh hooks/voice-runtime.sh tests/test_voice_runtime.sh install.sh uninstall.sh`, `bash tests/test_voice_runtime.sh`, and `cd server && .venv/bin/python -m pytest`.
 - Issue #3 shipped to `main`, pushed, and closed on GitHub. Main verification passed with the same three commands.
 - Issue #4 branch verification passed with `bash -n hooks/tts-summary.sh hooks/codex-tts-summary.sh hooks/voice-runtime.sh tests/test_voice_runtime.sh tests/test_install_config.sh install-config.sh install.sh uninstall.sh`, `bash tests/test_voice_runtime.sh`, `bash tests/test_install_config.sh`, and `cd server && .venv/bin/python -m pytest`.
+- Issue #4 shipped to `main`. Main verification passed with the same four commands.
 
 ## Recommended Next Actions
 
-- Finish landing #4 to `main`, then close the issue with main verification evidence.
-- Then run `$lets-ship` for #5: package and document Agent Voice for Claude and Codex.
+- Run `$lets-ship` for #5: package and document Agent Voice for Claude and Codex.
