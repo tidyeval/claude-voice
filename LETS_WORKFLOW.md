@@ -11,11 +11,11 @@ Evolve Claude Voice into Agent Voice: one shared local voice runtime with thin C
 ## Current State
 
 - Repo has a GitHub remote: `https://github.com/tidyeval/claude-voice.git`.
-- Current branch during adoption: `codex/voice-set-picker`.
+- Current branch after issue #3 landing: `main`.
 - `main` exists locally and on origin.
-- Current branch contains one feature commit over `main`: `feat: add /voice set picker and voice validation`.
 - `IMPLEMENTATION_ORDER.md` now tracks three implementation issues.
-- Current implementation is Claude-shaped: docs, install paths, hook payload wording, settings wiring, and skill installation assume `~/.claude`.
+- Issue #3 shipped the shared voice runtime and closed on GitHub.
+- Current implementation still has Claude-shaped install paths, settings wiring, and skill installation under `~/.claude`.
 - Codex support is viable through Codex lifecycle hooks. Current docs describe `features.codex_hooks`, `hooks.json` or inline `[hooks]`, and Stop as a supported event.
 
 ## Decisions Captured
@@ -35,8 +35,9 @@ Evolve Claude Voice into Agent Voice: one shared local voice runtime with thin C
 - Failed before sync: `cd server && uv run pytest` because `soundfile` was missing from the active uv environment.
 - Planning created GitHub issues #3, #4, and #5.
 - Issue #3 branch verification passed with `bash -n hooks/tts-summary.sh hooks/voice-runtime.sh tests/test_voice_runtime.sh install.sh uninstall.sh`, `bash tests/test_voice_runtime.sh`, and `cd server && .venv/bin/python -m pytest`.
+- Issue #3 shipped to `main`, pushed, and closed on GitHub. Main verification passed with the same three commands.
 
 ## Recommended Next Actions
 
-- Finish landing #3, then ship #4 for Codex Stop-hook adapter and installer wiring.
+- Run `$lets-ship` for #4: add Codex Stop-hook adapter and installer wiring.
 - Then ship #5 to package and document Agent Voice for Claude and Codex.
