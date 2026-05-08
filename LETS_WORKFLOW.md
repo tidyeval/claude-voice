@@ -1,7 +1,7 @@
 # Lets Workflow
 
-Status: shipping
-Current step: lets-ship
+Status: done
+Current step: none
 Next step: none
 
 ## Goal
@@ -41,7 +41,8 @@ Evolve Claude Voice into Agent Voice: one shared local voice runtime with thin C
 - Issue #4 shipped to `main`. Main verification passed with the same four commands.
 - Issue #5 baseline verification passed with `bash -n hooks/tts-summary.sh hooks/codex-tts-summary.sh hooks/voice-runtime.sh tests/test_voice_runtime.sh tests/test_install_config.sh install-config.sh install.sh uninstall.sh`, `bash tests/test_voice_runtime.sh`, `bash tests/test_install_config.sh`, and `cd server && .venv/bin/python -m pytest`.
 - Issue #5 branch verification passed with the same four commands.
+- Issue #5 shipped to `main`. Main verification passed with the same four commands.
 
 ## Recommended Next Actions
 
-- Finish #5 landing: merge to `main`, run fresh main verification, push, and close the issue.
+- Current Agent Voice packaging workflow is complete. Next useful move is to choose a new product or architecture goal, or decide what to do with open PR #2 for `/voice set`.
