@@ -1,0 +1,7 @@
+version: 1
+project: {id: agent-voice, name: Agent Voice, boundary: repository}
+nodes:
+  - {id: agent-voice, type: project, state: observed, responsibility: Provide a local text-to-speech runtime for Claude Code and Codex, evidence: [README.md]}
+  - {id: agent-voice-runtime, type: component, state: observed, responsibility: Run and configure the voice runtime, evidence: [server/server.py, hooks/voice-runtime.sh]}
+edges:
+  - {from: agent-voice, to: agent-voice-runtime, type: contains, state: observed, evidence: [server/server.py]}
